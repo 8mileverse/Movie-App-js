@@ -176,7 +176,7 @@ function displayMovieBackground(type, backdropPath) {
   overlaydiv.style.top = '0';
   overlaydiv.style.left = '0';
   overlaydiv.style.zIndex = '-1';
-  overlaydiv.style.opacity = '0.1';
+  overlaydiv.style.opacity = '0.3';
 
   if (type == 'movie') {
    document.querySelector('#movie-details').appendChild(overlaydiv)
