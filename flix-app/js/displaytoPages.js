@@ -73,7 +73,7 @@ const global = {
         displayPopularMovies();
         break;
   
-      case "/index":
+      case "/index.html":
         console.log("Home");
         break;
   
