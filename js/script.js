@@ -90,8 +90,8 @@ async function displayMovieDetails() {
   const movie = await fetchAPIData(`movie/${movieId}`);
 
   // overlay for background image
-  displayMovieBackground('movie', movie.backdrop_path);
-  
+  displayMovieBackground("movie", movie.backdrop_path);
+
   const div = document.createElement("div");
 
   div.innerHTML = `
@@ -134,9 +134,15 @@ async function displayMovieDetails() {
 <div class="details-bottom">
   <h2>Movie Info</h2>
   <ul>
-    <li><span class="text-secondary">Budget:</span> $${addCommasToNumber(movie.budget)}</li>
-    <li><span class="text-secondary">Revenue:</span> $${addCommasToNumber(movie.revenue)}</li>
-    <li><span class="text-secondary">Runtime:</span> ${addCommasToNumber(movie.runtime)} mins</li>
+    <li><span class="text-secondary">Budget:</span> $${addCommasToNumber(
+      movie.budget
+    )}</li>
+    <li><span class="text-secondary">Revenue:</span> $${addCommasToNumber(
+      movie.revenue
+    )}</li>
+    <li><span class="text-secondary">Runtime:</span> ${addCommasToNumber(
+      movie.runtime
+    )} mins</li>
     <li><span class="text-secondary">Status:</span> ${movie.status}</li>
   </ul>
     
@@ -167,22 +173,21 @@ function hideSpinner() {
 function displayMovieBackground(type, backdropPath) {
   const overlaydiv = document.createElement("div");
   overlaydiv.style.backgroundImage = `url("https://image.tmdb.org/t/p/original/${backdropPath})`;
-  overlaydiv.style.backgroundSize = 'cover';
-  overlaydiv.style.backgroundPosition = 'center';
-  overlaydiv.style.backgroundRepeat = 'no-repeat';
-  overlaydiv.style.height = '100vh';
-  overlaydiv.style.width = '100vw';
-  overlaydiv.style.position = 'absolute';
-  overlaydiv.style.top = '0';
-  overlaydiv.style.left = '0';
-  overlaydiv.style.zIndex = '-1';
-  overlaydiv.style.opacity = '0.3';
+  overlaydiv.style.backgroundSize = "cover";
+  overlaydiv.style.backgroundPosition = "center";
+  overlaydiv.style.backgroundRepeat = "no-repeat";
+  overlaydiv.style.height = "100vh";
+  overlaydiv.style.width = "100vw";
+  overlaydiv.style.position = "absolute";
+  overlaydiv.style.top = "0";
+  overlaydiv.style.left = "0";
+  overlaydiv.style.zIndex = "-1";
+  overlaydiv.style.opacity = "0.3";
 
-  if (type == 'movie') {
-   document.querySelector('#movie-details').appendChild(overlaydiv)
-  }
-  else{
-    document.querySelector('#tv-details').appendChild(overlaydiv)
+  if (type == "movie") {
+    document.querySelector("#movie-details").appendChild(overlaydiv);
+  } else {
+    document.querySelector("#tv-details").appendChild(overlaydiv);
   }
 }
 
@@ -190,34 +195,32 @@ function displayMovieBackground(type, backdropPath) {
 function displayShowBackground(type, backdropPath) {
   const overlaydiv = document.createElement("div");
   overlaydiv.style.backgroundImage = `url("https://image.tmdb.org/t/p/original/${backdropPath})`;
-  overlaydiv.style.backgroundSize = 'cover';
-  overlaydiv.style.backgroundPosition = 'center';
-  overlaydiv.style.backgroundRepeat = 'no-repeat';
-  overlaydiv.style.height = '100vh';
-  overlaydiv.style.width = '100vw';
-  overlaydiv.style.position = 'absolute';
-  overlaydiv.style.top = '0';
-  overlaydiv.style.left = '0';
-  overlaydiv.style.zIndex = '-1';
-  overlaydiv.style.opacity = '0.3';
+  overlaydiv.style.backgroundSize = "cover";
+  overlaydiv.style.backgroundPosition = "center";
+  overlaydiv.style.backgroundRepeat = "no-repeat";
+  overlaydiv.style.height = "100vh";
+  overlaydiv.style.width = "100vw";
+  overlaydiv.style.position = "absolute";
+  overlaydiv.style.top = "0";
+  overlaydiv.style.left = "0";
+  overlaydiv.style.zIndex = "-1";
+  overlaydiv.style.opacity = "0.3";
 
-  if (type == 'tv') {
-   document.querySelector('#show-details').appendChild(overlaydiv)
-  }
-  else{
-    document.querySelector('#movie-details').appendChild(overlaydiv)
+  if (type == "tv") {
+    document.querySelector("#show-details").appendChild(overlaydiv);
+  } else {
+    document.querySelector("#movie-details").appendChild(overlaydiv);
   }
 }
-
 
 // display TV Details
 async function displayShowDetails() {
   const showId = window.location.search.split("=")[1];
-  const show = await fetchAPIData(`tv/${showId}}`);
+  const show = await fetchAPIData(`tv/${showId}`);
 
   // overlay for background image
-  displayShowBackground('tv', show.backdrop_path);
-  
+  displayShowBackground("tv", show.backdrop_path);
+
   const div = document.createElement("div");
 
   // // Create seasons list
@@ -246,24 +249,33 @@ async function displayShowDetails() {
       <ul class="list-group">
         ${show.genres.map((genre) => `<li>${genre.name}</li>`).join("")}
       </ul>
-      <a href="${show.homepage}" target="_blank" class="btn">Visit Show Homepage</a>
+      <a href="${
+        show.homepage
+      }" target="_blank" class="btn">Visit Show Homepage</a>
     </div>
   </div>
   <div class="details-bottom">
     <h2>Show Info</h2>
     <ul>
-      <li><span class="text-secondary">Number Of Episodes:</span> ${show.number_of_episodes}</li>
-      <li><span class="text-secondary">Last Episode To Air:</span> ${show.last_episode_to_air.name}</li>
-      <li><span class="text-secondary">Next Episode To Air:</span> ${show.next_episode_to_air.name}</li>
+      <li><span class="text-secondary">Number Of Episodes:</span> ${
+        show.number_of_episodes
+      }</li>
+      <li><span class="text-secondary">Last Episode To Air:</span> ${
+        show.last_episode_to_air.name
+      }</li>
+      <li><span class="text-secondary">Next Episode To Air:</span> ${
+        show.next_episode_to_air.name
+      }</li>
       <li><span class="text-secondary">Status:</span> ${show.status}</li>
     </ul>
     <h4>Production Companies</h4>
     <div class="list-group">
-      ${show.production_companies.map((company) => `<span>${company.name}</span>`).join(", ")}
+      ${show.production_companies
+        .map((company) => `<span>${company.name}</span>`)
+        .join(", ")}
     </div>
   </div>
   `;
-  
 
   document.querySelector("#show-details").appendChild(div);
 }
@@ -280,13 +292,72 @@ async function fetchAPIData(endpoint) {
   const res = await fetch(
     `${API_URL}${endpoint}?api_key=${API_KEY}&language=en-US`
   );
+
   const data = await res.json();
 
   hideSpinner(); // hide spinner after the request is made
-  console.log(data);
+  // console.log(data);
+
   return data;
 }
 
+// Dislay the slider
+async function displaySlider(data) {
+  // when is to be displayed when doing parents
+
+  const { results } = await fetchAPIData("movie/now_playing");
+  console.log(results);
+
+  results.forEach((movie) => {
+    const div = document.createElement("div");
+    div.classList.add("swiper-slide");
+
+    div.innerHTML = `      
+            <a href="movie-details.html?id=${movie.id}">
+              <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="${movie.title}" /> 
+             </a>
+            <h4 class="swiper-rating">
+              <i class="fas fa-star text-secondary"></i> ${movie.vote_average.toFixed(1)} / 10
+            </h4>
+            
+   
+    `;
+    //note: when fetching an inmage always place it with the link of https
+
+    document.querySelector(".swiper-wrapper").appendChild(div);
+
+    initSwiper();
+  });
+}
+
+function initSwiper() {
+  const swiper = new Swiper(".swiper", {
+    slidesPerView: 1,
+    spaceBetween: 10,
+    freeMode: true,
+    loop: true,
+    autoplay: {
+      delay: 5000,
+      disableOnInteraction: false,
+    },
+    breakpoints: {
+      500: {
+        slidesPerView: 2,
+        spaceBetween: 30,
+      },
+      700: {
+        slidesPerView: 3,
+        spaceBetween: 30,
+      },
+      1200: {
+        slidesPerView: 4,
+        spaceBetween: 30,
+      },
+    },
+  });
+}
+
+//
 function highlightActiveLink() {
   const links = document.querySelectorAll(".nav-link");
   links.forEach((link) => {
@@ -302,13 +373,13 @@ function highlightActiveLink() {
 function addCommasToNumber(figure) {
   const number = figure.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","); //regex
   return number;
-
 }
 
 // INIT THE APP
 function init() {
   switch (global.currentPage) {
     case "/":
+      displaySlider();
       displayPopularMovies();
       break;
 
@@ -321,7 +392,7 @@ function init() {
       break;
 
     case "/tv-details.html":
-      displayShowDetails()
+      displayShowDetails();
       break;
 
     case "/shows.html":
