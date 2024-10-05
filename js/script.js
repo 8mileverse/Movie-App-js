@@ -406,6 +406,27 @@
     return number;
   }
 
+//  Displaying Alert
+
+function showAlert(message, className){
+
+const alertDisplay = document.createElement("div");
+alertDisplay.classList.add('alert', className);
+
+alertDisplay.appendChild(document.createTextNode(message)); // when creating an alert, you can add to the dom as a message
+document.querySelector('#alert').appendChild(alertDisplay);
+
+
+
+setTimeout(() => {
+  alertDisplay.classList.add('fade-out'); // Add fade-out class
+
+  // Wait for the CSS transition to complete before removing the element
+  setTimeout(() => {
+      alertDisplay.remove();
+  }, 3000); // Match this duration with the CSS transition
+}, 3000); // Time before starting the fade-out
+}
   // INIT THE APP
   function init() {
     switch (global.currentPage) {
