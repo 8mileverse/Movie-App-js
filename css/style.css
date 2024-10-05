@@ -238,8 +238,7 @@ section h2 {
   margin-top: 20px;
 }
 
-.details-bottom {
-}
+.details-bottom {}
 
 .details-bottom li {
   margin: 15px 0;
@@ -328,16 +327,23 @@ section h2 {
 
 /* Alert */
 .alert {
-  background: red;
+  background: rgba(102, 102, 102, 0.849);
   padding: 10px 20px;
   margin-bottom: 20px;
   border-radius: 5px;
+  opacity: 1;
+  transition: opacity 3s ease-out;
+  /* Smooth transition for opacity */
+
+}
+.alert.fade-out {
+  opacity: 0; /* Fade out to 0 */
 }
 
-.alert-success {
+.success {
   background: green;
 }
 
-.alert-error {
+.error {
   background: red;
 }
