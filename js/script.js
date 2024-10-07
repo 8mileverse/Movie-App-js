@@ -299,7 +299,6 @@ async function fetchAPIData(endpoint) {
   const res = await fetch(
     `${API_URL}${endpoint}?api_key=${API_KEY}&language=en-US`
   );
-
   const data = await res.json();
 
   hideSpinner(); // hide spinner after the request is made
