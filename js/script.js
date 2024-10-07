@@ -5,6 +5,7 @@ const global = {
     type: "",
     page: 1,
     totalPages: 1,
+    totalResults: 0,
   },
   api: {
     API_KEY: "63b797eecf604f8d910938f3a5f3f2db",
@@ -168,59 +169,6 @@ async function displayMovieDetails() {
   document.querySelector("#movie-details").appendChild(div);
 }
 
-// displaySpinner
-function showSpinner() {
-  document.querySelector(".spinner").classList.add("show");
-}
-
-function hideSpinner() {
-  document.querySelector(".spinner").classList.remove("show");
-}
-
-// displayMovieBackdrop
-function displayMovieBackground(type, backdropPath) {
-  const overlaydiv = document.createElement("div");
-  overlaydiv.style.backgroundImage = `url("https://image.tmdb.org/t/p/original/${backdropPath})`;
-  overlaydiv.style.backgroundSize = "cover";
-  overlaydiv.style.backgroundPosition = "center";
-  overlaydiv.style.backgroundRepeat = "no-repeat";
-  overlaydiv.style.height = "100vh";
-  overlaydiv.style.width = "100vw";
-  overlaydiv.style.position = "absolute";
-  overlaydiv.style.top = "0";
-  overlaydiv.style.left = "0";
-  overlaydiv.style.zIndex = "-1";
-  overlaydiv.style.opacity = "0.3";
-
-  if (type == "movie") {
-    document.querySelector("#movie-details").appendChild(overlaydiv);
-  } else {
-    document.querySelector("#tv-details").appendChild(overlaydiv);
-  }
-}
-
-// display TV Details
-function displayShowBackground(type, backdropPath) {
-  const overlaydiv = document.createElement("div");
-  overlaydiv.style.backgroundImage = `url("https://image.tmdb.org/t/p/original/${backdropPath})`;
-  overlaydiv.style.backgroundSize = "cover";
-  overlaydiv.style.backgroundPosition = "center";
-  overlaydiv.style.backgroundRepeat = "no-repeat";
-  overlaydiv.style.height = "100vh";
-  overlaydiv.style.width = "100vw";
-  overlaydiv.style.position = "absolute";
-  overlaydiv.style.top = "0";
-  overlaydiv.style.left = "0";
-  overlaydiv.style.zIndex = "-1";
-  overlaydiv.style.opacity = "0.3";
-
-  if (type == "tv") {
-    document.querySelector("#show-details").appendChild(overlaydiv);
-  } else {
-    document.querySelector("#movie-details").appendChild(overlaydiv);
-  }
-}
-
 // display TV Details
 async function displayShowDetails() {
   const showId = window.location.search.split("=")[1];
@@ -284,50 +232,146 @@ async function displayShowDetails() {
     `;
 
   document.querySelector("#show-details").appendChild(div);
+}
+
+// displayMovieBackdrop
+function displayMovieBackground(type, backdropPath) {
+  const overlaydiv = document.createElement("div");
+  overlaydiv.style.backgroundImage = `url("https://image.tmdb.org/t/p/original/${backdropPath})`;
+  overlaydiv.style.backgroundSize = "cover";
+  overlaydiv.style.backgroundPosition = "center";
+  overlaydiv.style.backgroundRepeat = "no-repeat";
+  overlaydiv.style.height = "100vh";
+  overlaydiv.style.width = "100vw";
+  overlaydiv.style.position = "absolute";
+  overlaydiv.style.top = "0";
+  overlaydiv.style.left = "0";
+  overlaydiv.style.zIndex = "-1";
+  overlaydiv.style.opacity = "0.3";
+
+  if (type == "movie") {
+    document.querySelector("#movie-details").appendChild(overlaydiv);
+  } else {
+    document.querySelector("#tv-details").appendChild(overlaydiv);
+  }
+}
+
+// display TV BackDrop
+function displayShowBackground(type, backdropPath) {
+  const overlaydiv = document.createElement("div");
+  overlaydiv.style.backgroundImage = `url("https://image.tmdb.org/t/p/original/${backdropPath})`;
+  overlaydiv.style.backgroundSize = "cover";
+  overlaydiv.style.backgroundPosition = "center";
+  overlaydiv.style.backgroundRepeat = "no-repeat";
+  overlaydiv.style.height = "100vh";
+  overlaydiv.style.width = "100vw";
+  overlaydiv.style.position = "absolute";
+  overlaydiv.style.top = "0";
+  overlaydiv.style.left = "0";
+  overlaydiv.style.zIndex = "-1";
+  overlaydiv.style.opacity = "0.3";
+
+  if (type == "tv") {
+    document.querySelector("#show-details").appendChild(overlaydiv);
+  } else {
+    document.querySelector("#movie-details").appendChild(overlaydiv);
+  }
+}
+
+// seacrh movies/shows
+async function search() {
+  const queryString = window.location.search;
+  const urlParams = new URLSearchParams(queryString);
+
+  global.search.type = urlParams.get("type");
+  global.search.term = urlParams.get("search-term");
+
+  if (global.search.term !== "" && global.search.term !== null) {
+    // Fetch data from API
+    const { results, total_pages, total_results } = await searchAPIData(); 
+    
+    // Set global properties
+    global.search.totalPages = total_pages; 
+    global.search.totalResults = total_results;
+
+    // Display the search results
+    if (results.length === 0) {
+      showAlert("No Results found", "success");
+    } else {
+      displaySearchResults(results);
+    }
+
+    // Clear the search input field
+    document.querySelector("#search-term").value = "";
+  } else {
+    showAlert("Please Enter A Search Term");
+  }
+}
+
+// function to display the search results
+function displaySearchResults(results) {
+  // clear previous search
+  document.querySelector("#search-results").innerHTML = ' '
+  document.querySelector("#search-results-heading").innerHTML = ' '
+  document.querySelector("#pagination").innerHTML = ' '
   
-}
-
-// Global Fetching From API DataBase
-async function fetchAPIData(endpoint) {
-  const API_KEY = global.api.API_KEY;
-  const API_URL = global.api.API_URL;
-
-  // show spinner before the request is made
-
-  showSpinner();
-
-  const res = await fetch(
-    `${API_URL}${endpoint}?api_key=${API_KEY}&language=en-US`
-  );
-  const data = await res.json();
-
-  hideSpinner(); // hide spinner after the request is made
-  // console.log(data);
-
-  return data;
-}
-
-// Search Fetching From Api Database
-async function searchAPIData() {
-  const API_KEY = global.api.API_KEY;
-  const API_URL = global.api.API_URL;
-
-  // show spinner before the request is made
-
-  showSpinner();
-
-  const res = await fetch(
-    `${API_URL}search/${global.search.type}?api_key=${API_KEY}&language=en-US&query=${global.search.term}`
-  );
-
-  const data = await res.json();
-
-  hideSpinner(); // hide spinner after the request is made
-  // console.log(data);
-
-  return data;
-}
-// Dislay the sliderMovies
+    // const results = document.createElement('div');
+    results.forEach((result) => {
+      const div = document.createElement("div");
+      div.classList.add("card");
+      div.innerHTML = ` 
+      
+          <a href="${global.search.type}-details.html?id=${result.id}">
+            ${
+              result.poster_path
+                ? `
+  
+                <img
+                  src="https://image.tmdb.org/t/p/w500${
+                    global.search.type === "movie"
+                      ? result.poster_path
+                      : result.poster_path
+                  }"
+                  class="card-img-top"
+                  alt="${
+                    global.search.type === "movie" ? result.title : result.name
+                  }"
+                /> 
+                `
+                : ` <img
+                  src="images/no-image.jpg"
+                  class="card-img-top"
+                  alt="${
+                    global.search.type === "movie" ? result.title : result.name
+                  }"
+                />`
+            }
+          </a>
+          <div class="card-body">
+              <h5 class="card-title">${
+                global.search.type === "movie" ? result.title : result.name
+              }</h5>
+              <p class="card-text">
+                <small class="text-muted">Release: ${
+                  global.search.type === "movie"
+                    ? result.release_date
+                    : result.airing_today || result.first_air_date
+                }</small>
+              </p>
+          </div>
+      
+        
+        `;
+        document.querySelector('#search-results-heading').innerHTML = `
+           <h2>${results.length} of ${global.search.totalResults} Results for ${global.search.term}</h2>
+        `;
+      document.querySelector("#search-results").appendChild(div);
+    });
+  
+    displayPagination()
+  }
+  
+  // Dislay the sliderMovies
 async function displaySlider() {
   // when is to be displayed when doing parents
 
@@ -359,6 +403,89 @@ async function displaySlider() {
     initSwiper();
   });
 }
+
+
+// for the Swiper Js
+function initSwiper() {
+  const swiper = new Swiper(".swiper", {
+    slidesPerView: 1,
+    spaceBetween: 10,
+    freeMode: true,
+    loop: true,
+    autoplay: {
+      delay: 5000,
+      disableOnInteraction: false,
+    },
+    breakpoints: {
+      500: {
+        slidesPerView: 2,
+        spaceBetween: 30,
+      },
+      700: {
+        slidesPerView: 3,
+        spaceBetween: 30,
+      },
+      1200: {
+        slidesPerView: 4,
+        spaceBetween: 30,
+      },
+    },
+  });
+}
+
+
+// Global Fetching From API DataBase
+async function fetchAPIData(endpoint) {
+  const API_KEY = global.api.API_KEY;
+  const API_URL = global.api.API_URL;
+
+  // show spinner before the request is made
+
+  showSpinner();
+
+  const res = await fetch(
+    `${API_URL}${endpoint}?api_key=${API_KEY}&language=en-US`
+  );
+
+  const data = await res.json();
+
+  hideSpinner(); // hide spinner after the request is made
+  // console.log(data);
+
+  return data;
+}
+
+// Search Fetching From Api Database
+async function searchAPIData() {
+  const API_KEY = global.api.API_KEY;
+  const API_URL = global.api.API_URL;
+
+  // show spinner before the request is made
+
+  showSpinner();
+
+  const res = await fetch(
+    `${API_URL}search/${global.search.type}?api_key=${API_KEY}&language=en-US&query=${global.search.term}&page=${global.search.page}`
+  );
+
+  const data = await res.json();
+
+  hideSpinner(); // hide spinner after the request is made
+  // console.log(data);
+
+  return data;
+}
+
+// displaySpinner
+function showSpinner() {
+  document.querySelector(".spinner").classList.add("show");
+}
+
+// Hide the spinner
+function hideSpinner() {
+  document.querySelector(".spinner").classList.remove("show");
+}
+
 
 // Diplay the Slider for the Tv shows
 async function displaySliderTv() {
@@ -392,101 +519,52 @@ async function displaySliderTv() {
   initSwiper();
 }
 
-// seacrh movies/shows
-async function search() {
-  const queryString = window.location.search;
-  const urlParams = new URLSearchParams(queryString);
 
-  global.search.type = urlParams.get("type"); // called from the html attribute type
-  global.search.term = urlParams.get("search-term"); //called from the html attribute name
 
-  if (global.search.term !== "" && global.search.term !== null) {
-    // @todo - make request and display results
+//display Pagination
+ function displayPagination(){
 
-    const { results } = await searchAPIData(); // the results is brought as an object in which arrays are placed inside, hence the destructuring
-    if (results.length === 0) {
-      showAlert("No Results found", "success");
-    }
+  const div = document.createElement("div");
+  div.classList.add("pagination");
+  div.innerHTML = `
+   
+        <button class="btn btn-primary" id="prev">Prev</button>
+        <button class="btn btn-primary" id="next">Next</button>
+        <div class="page-counter">Page ${global.search.page} of ${global.search.totalPages}</div>
 
-    displaySearchResults(results);
+        `;
+  document.querySelector("#pagination").appendChild(div);
 
-    document.querySelector('#search').value = ""
-  } else {
-    showAlert("Please Enter A Search Term");
+  // Disable Prev on first page
+  if(global.search.page === 1){
+    document.querySelector("#prev").disabled = true;
   }
-}
+  // Disable Next on last page
+  if(global.search.page === global.search.totalPages){
+    document.querySelector("#next").disabled = true;
+  }
 
-// function to display the search results
+  // Next Page
+    document.querySelector("#next").addEventListener("click", async () => {
+      global.search.page++;
+      const { results, totalPages} = await searchAPIData();
+      displaySearchResults(results);
 
-function displaySearchResults(results) {
-  // const results = document.createElement('div');
-  results.forEach((result) => {
-    const div = document.createElement("div");
-    div.classList.add("card");
-    div.innerHTML = ` 
-    
-        <a href="${global.search.type}-details.html?id=${result.id}">
-          ${
-            result.poster_path
-              ? `
-
-              <img
-                src="https://image.tmdb.org/t/p/w500${global.search.type === "movie" ? result.poster_path: result.poster_path}"
-                class="card-img-top"
-                alt="${
-                  global.search.type === "movie" ? result.title : result.name
-                }"
-              /> 
-              `
-              : ` <img
-                src="images/no-image.jpg"
-                class="card-img-top"
-                alt="${
-                  global.search.type === "movie" ? result.title : result.name
-                }"
-              />`
-          }
-        </a>
-        <div class="card-body">
-            <h5 class="card-title">${global.search.type === "movie" ? result.title : result.name}</h5>
-            <p class="card-text">
-              <small class="text-muted">Release: ${global.search.type === "movie" ? result.release_date : result.airing_today || result.first_air_date}</small>
-            </p>
-        </div>
-    
       
-      `;
-    document.querySelector("#search-results").appendChild(div);
-  });
+        
+ })
+
+ // prev page
+ document.querySelector("#prev").addEventListener("click", async () => {
+  global.search.page-- ;
+  const { results, totalPages} = await searchAPIData();
+  displaySearchResults(results);
+
+  // prev page
+    
+})
 }
 
-// for the Swiper Js
-function initSwiper() {
-  const swiper = new Swiper(".swiper", {
-    slidesPerView: 1,
-    spaceBetween: 10,
-    freeMode: true,
-    loop: true,
-    autoplay: {
-      delay: 5000,
-      disableOnInteraction: false,
-    },
-    breakpoints: {
-      500: {
-        slidesPerView: 2,
-        spaceBetween: 30,
-      },
-      700: {
-        slidesPerView: 3,
-        spaceBetween: 30,
-      },
-      1200: {
-        slidesPerView: 4,
-        spaceBetween: 30,
-      },
-    },
-  });
-}
 
 // Highlight in Active Link
 function highlightActiveLink() {
@@ -510,7 +588,7 @@ function addCommasToNumber(figure) {
 
 function showAlert(message, className) {
   const alertDisplay = document.createElement("div");
-  alertDisplay.classList.add("alert", className = "error");
+  alertDisplay.classList.add("alert", (className = "error"));
 
   alertDisplay.appendChild(document.createTextNode(message)); // when creating an alert, you can add to the dom as a message
   document.querySelector("#alert").appendChild(alertDisplay);
